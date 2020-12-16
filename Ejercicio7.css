@@ -1,0 +1,43 @@
+
+/*(0,0,1)*/
+body { 
+    display: grid;
+    grid: "h h"
+          "a b"
+          "f f";
+}
+
+/*(0,0,2)*/
+body > header { /*Pueden otros headers, como los contenidos en un article */
+    grid-area: h;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+}
+
+h1{
+    margin: 1em;
+}
+/*(0,0,1)*/
+form { 
+    grid-area: a;
+    flex-direction: column; 
+    padding: 1.8em;
+}
+
+input {
+    display: flex;
+}
+
+/*(0,0,1)*/
+main, article { 
+    grid-area: b; 
+    min-width: 12em;     
+}
+
+/*(0,0,1)*/
+footer{ 
+    grid-area: f;  
+    display: flex;
+    justify-content: center;
+}
