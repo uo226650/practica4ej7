@@ -41,6 +41,7 @@ input[type="submit"]{
 /*(0,0,1)*/
 label {
     font-size: larger;
+    display:block;
 }
 
 /*(0,0,1)*/
