@@ -149,9 +149,99 @@
                 $this->popularTablas();
             }
 
+            private function popularTablas(){
+
+                $this->populaAsignaturas();
+                $this->populaTareas();
+                $this->populaTODOs();
+            }
+
+            private function populaAsignaturas(){
+
+                try{
+
+                    $consultaPre = $this->db->prepare( "INSERT INTO Asignatura (nombre, codigo, curso) VALUES 
+                    ( 'Estructuras de datos', 'GIISOF01-2-003', 2),
+                    ( 'Ondas y Electromagnetismo', 'GIISOF01-1-005', 1),
+                    ( 'Software y Estándares para la Web', 'GIISOF01-3-002', 3),
+                    ( 'Fundamentos de Informática', 'GIISOF01-1-001', 1),
+                    ( 'Diseño del Software', 'GIISOF01-3-004', 3),
+                    ( 'Arquitectura de Computadores', 'GIISOF01-2-002', 2),
+                    ( 'Ingeniería de Requisitos', 'GIISOF01-4-002', 4)");   
+                                    
+                } catch (Exception $e){
+                    die('Error preparando consulta: ' .  $e->getMessage());
+                }  
+
+                if($consultaPre->execute() === TRUE){
+                    echo "<p>Tabla asignatura populada con éxito</p>";
+                } else { 
+                    echo "<p>ERROR en la carga de datos para la tabla Asignatura</p>";
+                }
+                $consultaPre->close();
+
+            }
+
+            private function populaTareas(){
+                
+                try{
+
+                    $consultaPre = $this->db->prepare( "INSERT INTO Tarea (nombre, categoria, dificultad, deadline) VALUES 
+                    ( 'Editor de figuras', 'Practica', 2, '2020-10-05'),
+                    ( 'API Google Maps', 'Practica', 8, '2020-11-15'),
+                    ( 'Implementar un logger', 'Practica', 9, '2020-11-29' ),
+                    ( 'Wireframe', 'Seminario', 5, '2020-11-10'),
+                    ( 'Bitácora', 'Seminario', 7, '2020-12-18'),
+                    ( 'AWS máquina', 'Seminario', 6, '2020-10-15'),
+                    ( 'Test usabilidad', 'Practica', 4, '2020-12-06')");   
+                                    
+                } catch (Exception $e){
+                    die('Error preparando consulta: ' .  $e->getMessage());
+                }  
+
+                if($consultaPre->execute() === TRUE){
+                    echo "<p>Tabla tarea populada con éxito</p>";
+                } else { 
+                    echo "<p>ERROR en la carga de datos para la tabla Tarea</p>";
+                }
+                $consultaPre->close();
+
+            }
+
+            private function populaTODOs(){
+                
+                try{
+                    $consultaPre = $this->db->prepare( 
+                        "INSERT INTO TODO (idAsignatura, idTarea, horasEstimadas) 
+                    VALUES 
+                    ( 5, 1, 13),
+                    ( 5, 2, 6),
+                    ( 5, 3, 3 ),
+                    ( 4, 4, 1),
+                    ( 3, 5, 35),
+                    ( 3 ,6, 1),
+                    ( 7, 7, 7)");   
+                                    
+                } catch (Exception $e){
+                    die('Error preparando consulta: ' .  $e->getMessage());
+                }  
+
+                if($consultaPre->execute() === TRUE){
+                    echo "<p>Tabla TODOs populada con éxito</p>";
+                    $this->verLista();
+                } else { 
+                    echo "<p>ERROR en la carga de datos para la tabla TODOs:</p>";
+                }
+                $consultaPre->close();
+            }
+
             public function cerrarConexion(){
                 $this->db->close();
             }
+
+            /******************************************************/
+
+            /**************** FILTROS ******************/
 
             public function filtrarAsignatura(){
 
@@ -190,6 +280,113 @@
                         echo "<p>No hay tareas de esa asignatura.</p>";
                     } 
             }
+
+            public function filtrarCategoria(){
+
+                $this->db->select_db("TODOList");
+ 
+                $consultaPre = $this->db->prepare(
+                    "SELECT * FROM Tarea 
+                    INNER JOIN TODO ON Tarea.iD=TODO.idTarea 
+                    WHERE categoria = ?");
+
+                $consultaPre->bind_param('s',$_POST["categoria"] );    
+
+                try{
+                    $resultado = $consultaPre->execute();
+                    //$this->verLista();
+                } catch (Exception $e){
+                    echo '<p>No se ha podido filtrar por categoría: ' .  $e->getMessage() . '</p>';
+                }
+
+                $resultado = $consultaPre->get_result();
+    
+                if ($resultado->num_rows > 0) {
+                        // Mostrar los datos en un lista
+                        echo "<p>Tareas pendientes por categoría: </p>";
+                        echo "<p>Número de filas = " . $resultado->num_rows . "</p>";
+                        echo "<ul>";
+                        while($row = $resultado->fetch_assoc()) {
+                            echo "<li>". $row['id'] . " - " . $row['nombre']." - ". $row['categoria']." - ". $row['dificultad'] . $row['deadline']." - ".$row['horasEstimadas']."</li>"; 
+                        }
+                        echo "</ul>";
+                    } else {
+                        echo "<p>No hay tareas en la categoría " . $_POST["categoria"]  . "</p>";
+                    } 
+                $consultaPre->close();
+            }  
+
+            public function filtrarUrgentes(){
+
+                $this->db->select_db("TODOList");
+                
+                $consultaPre = $this->db->prepare(
+                    "SELECT * FROM TODO 
+                    JOIN Tarea ON TODO.idTarea=Tarea.id 
+                    ORDER BY deadline");   
+
+                try{
+                    $resultado = $consultaPre->execute();
+                } catch (Exception $e){
+                    echo '<p>No se ha podido realizar la consulta: ' .  $e->getMessage() . '</p>';
+                }
+
+                $resultado = $consultaPre->get_result();
+     
+                if ($resultado->num_rows > 0) {
+                        // Mostrar los datos en un lista
+                        echo "<p>Tareas más urgentes: " . $resultado->num_rows . "</p>";
+                        echo "<ul>";
+                        while($row = $resultado->fetch_assoc()) {
+                            echo "<li>". $row['id'] . " - " . $row['nombre']." - ". $row['categoria']." - Dificultad: ". $row['dificultad'] ." - ". $row['deadline']." - ".$row['horasEstimadas']." horas estimadas</li>"; 
+                        }
+                        echo "</ul>";
+                    } else {
+                        echo "<p>Tabla vacía. Número de filas = " . $resultado->num_rows . "</p>";
+                    }
+                $consultaPre->close(); 
+
+            }
+
+            public function filtrarCurso(){
+
+                $this->db->select_db("TODOList");
+ 
+                $consultaPre = $this->db->prepare(
+                    "SELECT * FROM Tarea 
+                    INNER JOIN TODO ON Tarea.iD=TODO.idTarea 
+                    INNER JOIN Asignatura ON TODO.idAsignatura=Asignatura.id
+                    WHERE curso = ?");
+
+                $consultaPre->bind_param('s',$_POST["curso"] );    
+
+                try{
+                    $resultado = $consultaPre->execute();
+                    //$this->verLista();
+                } catch (Exception $e){
+                    echo '<p>No se ha podido filtrar por curso: ' .  $e->getMessage() . '</p>';
+                }
+
+                $resultado = $consultaPre->get_result();
+    
+                if ($resultado->num_rows > 0) {
+                        // Mostrar los datos en un lista
+                        echo "<p>Tareas pendientes del curso: " . $_POST["curso"].  "</p>";
+                        echo "<p>Número de filas = " . $resultado->num_rows . "</p>";
+                        echo "<ul>";
+                        while($row = $resultado->fetch_assoc()) {
+                            echo "<li>". $row['id'] . " - " . $row['nombre']." - ". $row['categoria']." - ". $row['dificultad'] . $row['deadline']." - ".$row['horasEstimadas']."</li>"; 
+                        }
+                        echo "</ul>";
+                    } else {
+                        echo "<p>No hay tareas en el curso " . $_POST["curso"]  . "</p>";
+                    } 
+                $consultaPre->close();
+            }
+
+            /******************************************************/
+
+            /**************** INSERTAR *******************/
 
             private function añadirTODO($idTarea, $idAsignatura, $horas){
 
@@ -312,120 +509,13 @@
                 $consultaPre->close();
             }
 
-            private function popularTablas(){
+            /******************************************************/
 
-                $this->populaAsignaturas();
-                $this->populaTareas();
-                $this->populaTODOs();
-            }
-
-            private function populaAsignaturas(){
-
-                try{
-
-                    $consultaPre = $this->db->prepare( "INSERT INTO Asignatura (nombre, codigo, curso) VALUES 
-                    ( 'Estructuras de datos', 'GIISOF01-2-003', 2),
-                    ( 'Ondas y Electromagnetismo', 'GIISOF01-1-005', 1),
-                    ( 'Software y Estándares para la Web', 'GIISOF01-3-002', 3),
-                    ( 'Fundamentos de Informática', 'GIISOF01-1-001', 1),
-                    ( 'Diseño del Software', 'GIISOF01-3-004', 3),
-                    ( 'Arquitectura de Computadores', 'GIISOF01-2-002', 2),
-                    ( 'Ingeniería de Requisitos', 'GIISOF01-4-002', 4)");   
-                                    
-                } catch (Exception $e){
-                    die('Error preparando consulta: ' .  $e->getMessage());
-                }  
-
-                if($consultaPre->execute() === TRUE){
-                    echo "<p>Tabla asignatura populada con éxito</p>";
-                } else { 
-                    echo "<p>ERROR en la carga de datos para la tabla Asignatura</p>";
-                }
-                $consultaPre->close();
-
-            }
-
-            private function populaTareas(){
-                
-                try{
-
-                    $consultaPre = $this->db->prepare( "INSERT INTO Tarea (nombre, categoria, dificultad, deadline) VALUES 
-                    ( 'Editor de figuras', 'Practica', 2, '2020-10-05'),
-                    ( 'API Google Maps', 'Practica', 8, '2020-11-15'),
-                    ( 'Implementar un logger', 'Practica', 9, '2020-11-29' ),
-                    ( 'Wireframe', 'Seminario', 5, '2020-11-10'),
-                    ( 'Bitácora', 'Seminario', 7, '2020-12-18'),
-                    ( 'AWS máquina', 'Seminario', 6, '2020-10-15'),
-                    ( 'Test usabilidad', 'Practica', 4, '2020-12-06')");   
-                                    
-                } catch (Exception $e){
-                    die('Error preparando consulta: ' .  $e->getMessage());
-                }  
-
-                if($consultaPre->execute() === TRUE){
-                    echo "<p>Tabla tarea populada con éxito</p>";
-                } else { 
-                    echo "<p>ERROR en la carga de datos para la tabla Tarea</p>";
-                }
-                $consultaPre->close();
-
-            }
-
-            private function populaTODOs(){
-                
-                try{
-                    $consultaPre = $this->db->prepare( 
-                        "INSERT INTO TODO (idAsignatura, idTarea, horasEstimadas) 
-                    VALUES 
-                    ( 5, 1, 13),
-                    ( 5, 2, 6),
-                    ( 5, 3, 3 ),
-                    ( 4, 4, 1),
-                    ( 3, 5, 35),
-                    ( 3 ,6, 1),
-                    ( 7, 7, 7)");   
-                                    
-                } catch (Exception $e){
-                    die('Error preparando consulta: ' .  $e->getMessage());
-                }  
-
-                if($consultaPre->execute() === TRUE){
-                    echo "<p>Tabla TODOs populada con éxito</p>";
-                    $this->verLista();
-                } else { 
-                    echo "<p>ERROR en la carga de datos para la tabla TODOs:</p>";
-                }
-                $consultaPre->close();
-            }
-
-            public function vaciarLista(){
-
-                $this->db->select_db("TODOList");
-
-                //Vacía la tabla TODO
-                $vaciarLista = "DELETE FROM TODO";
-
-                if($this->db->query($vaciarLista) !== TRUE){
-                    echo "<p>ERROR para vaciar lista. Error : ". $this->db->error . "</p>";
-                    exit();
-                }
-        
-
-                //Vacía la tabla Tareas
-                $vaciarTareas = "DELETE FROM Tarea";
-
-                if($this->db->query($vaciarTareas) === TRUE){
-                    echo "<p>Lista Tareas vacía </p>";
-                } else { 
-                    echo "<p>ERROR para vaciar lista. Error : ". $this->db->error . "</p>";
-                    exit();
-                }
-
-            }
+           /******************* INTERFAZ FORMULARIOS ******************/
 
             public function interfazCategoria(){
                 echo "<form method='post' action='#'>
-                <p>Categoría: <input type='text' name='categoria' /> </p>
+                <label>Categoría:</label> <input type='text' name='categoria' />
                 <input type='submit' value='Filtrar Categoría' name='filtrarCategoria' />
                 </form>";
                 $this->verLista();
@@ -434,7 +524,7 @@
 
             public function interfazAsignatura(){
                 echo '<form method="post" action="#">
-                <p>ID Asignatura: <input type="text" name="asignatura" /> </p>
+                <label>ID Asignatura:</label> <input type="text" name="asignatura" />
                 <input type="submit" value="Filtrar Asignatura" name="filtrarAsignatura" />
                 </form>';
                 $this->verLista();
@@ -442,7 +532,7 @@
 
             public function interfazCurso(){
                 echo '<form method="post" action="#">
-                <p>Curso: <input type="number" name="curso" /> </p>
+                <label>Curso:</label> <input type="number" name="curso" />
                 <input type="submit" value="Filtrar Curso" name="filtrarCurso" />
                 </form>';
                 $this->verLista();
@@ -450,9 +540,9 @@
 
             public function interfazInsertarAsignatura(){
                 echo '<form method="post" action="#">
-                <p>Nombre: <input type="text" name="nombre" /> </p>
-                <p>Código: <input type="text" name="codigo" /></p>
-                <p>Curso: <input type="number" name="curso" min="0" /> </p>
+                <label>Nombre:</label> <input type="text" name="nombre" />
+                <label>Código:</label><input type="text" name="codigo" />
+                <label>Curso:</label> <input type="number" name="curso" min="0" />
                 <input type="submit" value="Insertar Asignatura" name="submitAsignatura" />
                 </form>';
                 $this->verLista();
@@ -461,12 +551,12 @@
             public function interfazInsertarTarea(){
 
                 echo '<form method="post" action="#">
-                <p>Nombre: <input type="text" name="nombre" /> </p>
-                <p>Categoría: <input type="text" name="categoria" /></p>
-                <p>Dificultad: <input type="range" name="dificultad" min="0" max="10" step="1" /> </p>
-                <p>Deadline: <input type="date" name="deadline" /></p>
-                <p>Asignatura(id): <input type="number" name="asignatura" /></p>
-                <p>Estimación de horas: <input type="number" name="horas" /></p>
+                <label>Nombre:</label> <input type="text" name="nombre" /> </p>
+                <label>Categoría:</label> <input type="text" name="categoria" /></p>
+                <label>Dificultad:</label> <input type="range" name="dificultad" min="0" max="10" step="1" /> </p>
+                <label>Deadline:</label><input type="date" name="deadline" /></p>
+                <label>Asignatura(id):</label> <input type="number" name="asignatura" /></p>
+                <label>Estimación de horas:</label> <input type="number" name="horas" /></p>
                 <input type="submit" value="Insertar Tarea" name="submitTarea" />
                 </form>';
                 $this->verLista();
@@ -474,115 +564,12 @@
 
             public function interfazEliminarTarea(){
                 echo '<form method="post" action="#">
-                <p>Tarea(id): <input type="text" name="tarea" /> </p>
+                <label>Tarea (id):</label> <input type="text" name="tarea" /> </p>
                 <input type="submit" value="Eliminar Tarea" name="eliminarTarea" />
                 </form>';
                 $this->verLista();
             }
-
-            public function filtrarCategoria(){
-
-                $this->db->select_db("TODOList");
- 
-                $consultaPre = $this->db->prepare(
-                    "SELECT * FROM Tarea 
-                    INNER JOIN TODO ON Tarea.iD=TODO.idTarea 
-                    WHERE categoria = ?");
-
-                $consultaPre->bind_param('s',$_POST["categoria"] );    
-
-                try{
-                    $resultado = $consultaPre->execute();
-                    //$this->verLista();
-                } catch (Exception $e){
-                    echo '<p>No se ha podido filtrar por categoría: ' .  $e->getMessage() . '</p>';
-                }
-
-                $resultado = $consultaPre->get_result();
-    
-                if ($resultado->num_rows > 0) {
-                        // Mostrar los datos en un lista
-                        echo "<p>Tareas pendientes por categoría: </p>";
-                        echo "<p>Número de filas = " . $resultado->num_rows . "</p>";
-                        echo "<ul>";
-                        while($row = $resultado->fetch_assoc()) {
-                            echo "<li>". $row['id'] . " - " . $row['nombre']." - ". $row['categoria']." - ". $row['dificultad'] . $row['deadline']." - ".$row['horasEstimadas']."</li>"; 
-                        }
-                        echo "</ul>";
-                    } else {
-                        echo "<p>No hay tareas en la categoría " . $_POST["categoria"]  . "</p>";
-                    } 
-                $consultaPre->close();
-            }  
-
-
-            public function filtrarUrgentes(){
-
-                $this->db->select_db("TODOList");
-                
-                $consultaPre = $this->db->prepare(
-                    "SELECT * FROM TODO 
-                    JOIN Tarea ON TODO.idTarea=Tarea.id 
-                    ORDER BY deadline");   
-
-                try{
-                    $resultado = $consultaPre->execute();
-                } catch (Exception $e){
-                    echo '<p>No se ha podido realizar la consulta: ' .  $e->getMessage() . '</p>';
-                }
-
-                $resultado = $consultaPre->get_result();
-     
-                if ($resultado->num_rows > 0) {
-                        // Mostrar los datos en un lista
-                        echo "<p>Tareas más urgentes: " . $resultado->num_rows . "</p>";
-                        echo "<ul>";
-                        while($row = $resultado->fetch_assoc()) {
-                            echo "<li>". $row['id'] . " - " . $row['nombre']." - ". $row['categoria']." - Dificultad: ". $row['dificultad'] ." - ". $row['deadline']." - ".$row['horasEstimadas']." horas estimadas</li>"; 
-                        }
-                        echo "</ul>";
-                    } else {
-                        echo "<p>Tabla vacía. Número de filas = " . $resultado->num_rows . "</p>";
-                    }
-                $consultaPre->close(); 
-
-            }
-
-            public function filtrarCurso(){
-
-                $this->db->select_db("TODOList");
- 
-                $consultaPre = $this->db->prepare(
-                    "SELECT * FROM Tarea 
-                    INNER JOIN TODO ON Tarea.iD=TODO.idTarea 
-                    INNER JOIN Asignatura ON TODO.idAsignatura=Asignatura.id
-                    WHERE curso = ?");
-
-                $consultaPre->bind_param('s',$_POST["curso"] );    
-
-                try{
-                    $resultado = $consultaPre->execute();
-                    //$this->verLista();
-                } catch (Exception $e){
-                    echo '<p>No se ha podido filtrar por curso: ' .  $e->getMessage() . '</p>';
-                }
-
-                $resultado = $consultaPre->get_result();
-    
-                if ($resultado->num_rows > 0) {
-                        // Mostrar los datos en un lista
-                        echo "<p>Tareas pendientes del curso: " . $_POST["curso"].  "</p>";
-                        echo "<p>Número de filas = " . $resultado->num_rows . "</p>";
-                        echo "<ul>";
-                        while($row = $resultado->fetch_assoc()) {
-                            echo "<li>". $row['id'] . " - " . $row['nombre']." - ". $row['categoria']." - ". $row['dificultad'] . $row['deadline']." - ".$row['horasEstimadas']."</li>"; 
-                        }
-                        echo "</ul>";
-                    } else {
-                        echo "<p>No hay tareas en el curso " . $_POST["curso"]  . "</p>";
-                    } 
-                $consultaPre->close();
-            }
+            
 
             public function verAsignaturas(){
 
@@ -653,6 +640,36 @@
 
             }
 
+            /******************************************************/
+
+
+            /***************** SECCION ELIMINAR *****************/
+
+            public function vaciarLista(){
+
+                $this->db->select_db("TODOList");
+
+                //Vacía la tabla TODO
+                $vaciarLista = "DELETE FROM TODO";
+
+                if($this->db->query($vaciarLista) !== TRUE){
+                    echo "<p>ERROR para vaciar lista. Error : ". $this->db->error . "</p>";
+                    exit();
+                }
+        
+
+                //Vacía la tabla Tareas
+                $vaciarTareas = "DELETE FROM Tarea";
+
+                if($this->db->query($vaciarTareas) === TRUE){
+                    echo "<p>Lista Tareas vacía </p>";
+                } else { 
+                    echo "<p>ERROR para vaciar lista. Error : ". $this->db->error . "</p>";
+                    exit();
+                }
+
+            }
+
             private function eliminarTODO($idTarea){
 
                 $this->db->select_db("TODOList");
@@ -692,6 +709,8 @@
                 }
                 $consultaPre->close();
             }
+
+            /******************************************************/
 
             public function submit(){
                 if (count($_POST)>0) 

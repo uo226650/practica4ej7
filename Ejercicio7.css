@@ -46,5 +46,6 @@ label {
 /*(0,0,1)*/
 main{ 
     grid-area: b; 
-    min-width: 12em;     
+    min-width: 12em; 
+    padding-top: 2em;    
 }
