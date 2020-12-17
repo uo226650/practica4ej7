@@ -3,6 +3,7 @@
 <head>
     <title>BaseDatos :: Tareas de asignaturas</title>
     <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Rocío Cenador Martínez" /> 
     <link href="Ejercicio7.css" rel="stylesheet" />
 </head>   
