@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<!-- saved from url=(0080)https://localhost:8443/UO226650-practica4/PRACTICA-4/Ejercicio-7/Ejercicio7.php# -->
+<html lang="es"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>BaseDatos :: Tareas de asignaturas</title>
+    
+    <meta name="author" content="Rocío Cenador Martínez"> 
+    <link href="Ejercicio7.css" rel="stylesheet">
+</head>   
+<body>
+    <header>
+        <h1>Gestionar tareas pendientes</h1>
+    </header>    
+   
+        <form action="https://localhost:8443/UO226650-practica4/PRACTICA-4/Ejercicio-7/Ejercicio7.php#" method="POST">
+        <h2>Menú:</h2>
+            <label>Administración:</label>
+            <input type="submit" value="Crear Base de Datos" name="creaBaseDatos">
+            <input type="submit" value="Crear Tablas" name="creaTablas">
+            <label>Visualización:</label>
+            <input type="submit" value="Ver Lista" name="verLista">
+            <input type="submit" value="Ver Asignaturas" name="verAsignaturas">
+            <label>Filtros:</label>
+            <input type="submit" value="Filtrar categoria" name="interfazCategoria">     
+            <input type="submit" value="Filtrar asignatura" name="interfazAsignatura">
+            <input type="submit" value="Filtrar Urgentes" name="filtrarUrgentes">
+            <input type="submit" value="Filtrar Curso" name="interfazCurso">
+            <label>Añadir:</label>
+            <input type="submit" value="Insertar tarea" name="interfazInsertarTarea">
+            <input type="submit" value="Insertar Asignatura" name="interfazInsertarAsignatura"> 
+            <label>Eliminar:</label>
+            <input type="submit" value="Eliminar tarea" name="interfazEliminarTarea">
+            <input type="submit" value="Vaciar Lista" name="vaciarLista">
+        </form> 
+    <main>
+    
+    <form method="post" action="https://localhost:8443/UO226650-practica4/PRACTICA-4/Ejercicio-7/Ejercicio7.php#">
+                <p>Nombre: <input type="text" name="nombre"> </p>
+                <p>Categoría: <input type="text" name="categoria"></p>
+                <p>Dificultad: <input type="range" name="dificultad" min="0" max="10" step="1"> </p>
+                <p>Deadline: <input type="date" name="deadline"></p>
+                <p>Asignatura(id): <input type="number" name="asignatura"></p>
+                <p>Estimación de horas: <input type="number" name="horas"></p>
+                <input type="submit" value="Insertar Tarea" name="submitTarea">
+                </form><p>Tareas pendientes: 7</p><ul><li>5 - Bitácora - Software y Estándares para la Web - Seminario - Dificultad: 7 - 2020-12-18 - 35 horas estimadas</li><li>6 - AWS máquina - Software y Estándares para la Web - Seminario - Dificultad: 6 - 2020-10-15 - 1 horas estimadas</li><li>4 - Wireframe - Fundamentos de Informática - Seminario - Dificultad: 5 - 2020-11-10 - 1 horas estimadas</li><li>1 - Editor de figuras - Diseño del Software - Practica - Dificultad: 2 - 2020-10-05 - 13 horas estimadas</li><li>2 - API Google Maps - Diseño del Software - Practica - Dificultad: 8 - 2020-11-15 - 6 horas estimadas</li><li>3 - Implementar un logger - Diseño del Software - Practica - Dificultad: 9 - 2020-11-29 - 3 horas estimadas</li><li>7 - Test usabilidad - Ingeniería de Requisitos - Practica - Dificultad: 4 - 2020-12-06 - 7 horas estimadas</li></ul>    </main>
+
+</body></html>

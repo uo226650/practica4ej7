@@ -5,6 +5,8 @@ body {
     grid: "h h"
           "a b"
           "f f";
+    background-color: antiquewhite;
+    margin: 0;
 }
 
 /*(0,0,2)*/
@@ -13,6 +15,8 @@ body > header { /*Pueden otros headers, como los contenidos en un article */
     display: flex;
     flex-wrap: wrap;
     align-items: baseline;
+    margin: 0;
+    background-color: rgb(221, 198, 167);
 }
 
 h1{
@@ -22,22 +26,25 @@ h1{
 form { 
     grid-area: a;
     flex-direction: column; 
-    padding: 1.8em;
+    padding-left: 1.8em;
 }
 
-input {
+/*(0,1,1)*/
+input[type="submit"]{
     display: flex;
+    margin: 0.8em;
+    padding: 0.5em;
+    background-color: rgb(250, 244, 237);
+    font-size: 90%;
 }
 
 /*(0,0,1)*/
-main, article { 
+label {
+    font-size: larger;
+}
+
+/*(0,0,1)*/
+main{ 
     grid-area: b; 
     min-width: 12em;     
-}
-
-/*(0,0,1)*/
-footer{ 
-    grid-area: f;  
-    display: flex;
-    justify-content: center;
 }
