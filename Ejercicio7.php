@@ -515,7 +515,7 @@
 
             public function interfazCategoria(){
                 echo "<form method='post' action='#'>
-                <label>Categoría: <input type='text' id = 'categoria' name='categoria' /></label>
+                <label for='categoria'>Categoría: </label><input type='text' id = 'categoria' name='categoria' />
                 <input type='submit' value='Filtrar Categoría' name='filtrarCategoria' />
                 </form>";
                 $this->verLista();
@@ -524,7 +524,7 @@
 
             public function interfazAsignatura(){
                 echo '<form method="post" action="#">
-                <label>ID Asignatura: <input type="text" id="asignatura" name="asignatura" /></label>
+                <label for="asignatura">ID Asignatura: <input type="text" id="asignatura" name="asignatura" />
                 <input type="submit" value="Filtrar Asignatura" name="filtrarAsignatura" />
                 </form>';
                 $this->verLista();
@@ -532,7 +532,7 @@
 
             public function interfazCurso(){
                 echo '<form method="post" action="#">
-                <label>Curso: <input type="number" id="curso" name="curso" /></label>
+                <label for="curso">Curso:</label> <input type="number" id="curso" name="curso" />
                 <input type="submit" value="Filtrar Curso" name="filtrarCurso" />
                 </form>';
                 $this->verLista();
@@ -540,9 +540,9 @@
 
             public function interfazInsertarAsignatura(){
                 echo '<form method="post" action="#">
-                <label>Nombre: <input type="text" id="nombre" name="nombre" /></label>
-                <label>Código:<input type="text" id="codigo" name="codigo" /></label>
-                <label>Curso: <input type="number" id="curso" name="curso" min="0" /></label>
+                <label for="nombre">Nombre:</label> <input type="text" id="nombre" name="nombre" />
+                <label for="codigo">Código:</label><input type="text" id="codigo" name="codigo" />
+                <label for="curso">Curso:</label> <input type="number" id="curso" name="curso" min="0" />
                 <input type="submit" value="Insertar Asignatura" name="submitAsignatura" />
                 </form>';
                 $this->verLista();
