@@ -14,21 +14,21 @@
    
         <form action="#" method="POST">
         <h2>Menú:</h2>
-            <label>Administración:</label>
+            <p>Administración:</p>
             <input type="submit" value="Crear Base de Datos" name="creaBaseDatos" />
             <input type="submit" value="Crear Tablas" name="creaTablas" />
-            <label>Visualización:</label>
+            <p>Visualización:</p>
             <input type="submit" value="Ver Lista" name="verLista" />
             <input type="submit" value="Ver Asignaturas" name="verAsignaturas" />
-            <label>Filtros:</label>
+            <p>Filtros:</p>
             <input type="submit" value="Filtrar categoria" name="interfazCategoria" />     
             <input type="submit" value="Filtrar asignatura" name="interfazAsignatura" />
             <input type="submit" value="Filtrar Urgentes" name="filtrarUrgentes" />
             <input type="submit" value="Filtrar Curso" name="interfazCurso" />
-            <label>Añadir:</label>
+            <p>Añadir:</p>
             <input type="submit" value="Insertar tarea" name="interfazInsertarTarea" />
             <input type="submit" value="Insertar Asignatura" name="interfazInsertarAsignatura" /> 
-            <label>Eliminar:</label>
+            <p>Eliminar:</p>
             <input type="submit" value="Eliminar tarea" name="interfazEliminarTarea" />
             <input type="submit" value="Vaciar Lista" name="vaciarLista" />
         </form> 
@@ -515,7 +515,7 @@
 
             public function interfazCategoria(){
                 echo "<form method='post' action='#'>
-                <label>Categoría: <input type='text' name='categoria' /></label>
+                <label>Categoría: <input type='text' id = 'categoria' name='categoria' /></label>
                 <input type='submit' value='Filtrar Categoría' name='filtrarCategoria' />
                 </form>";
                 $this->verLista();
@@ -524,7 +524,7 @@
 
             public function interfazAsignatura(){
                 echo '<form method="post" action="#">
-                <label>ID Asignatura: <input type="text" name="asignatura" /></label>
+                <label>ID Asignatura: <input type="text" id="asignatura" name="asignatura" /></label>
                 <input type="submit" value="Filtrar Asignatura" name="filtrarAsignatura" />
                 </form>';
                 $this->verLista();
@@ -532,7 +532,7 @@
 
             public function interfazCurso(){
                 echo '<form method="post" action="#">
-                <label>Curso: <input type="number" name="curso" /></label>
+                <label>Curso: <input type="number" id="curso" name="curso" /></label>
                 <input type="submit" value="Filtrar Curso" name="filtrarCurso" />
                 </form>';
                 $this->verLista();
@@ -540,9 +540,9 @@
 
             public function interfazInsertarAsignatura(){
                 echo '<form method="post" action="#">
-                <label>Nombre: <input type="text" name="nombre" /></label>
-                <label>Código:<input type="text" name="codigo" /></label>
-                <label>Curso: <input type="number" name="curso" min="0" /></label>
+                <label>Nombre: <input type="text" id="nombre" name="nombre" /></label>
+                <label>Código:<input type="text" id="codigo" name="codigo" /></label>
+                <label>Curso: <input type="number" id="curso" name="curso" min="0" /></label>
                 <input type="submit" value="Insertar Asignatura" name="submitAsignatura" />
                 </form>';
                 $this->verLista();
@@ -551,12 +551,12 @@
             public function interfazInsertarTarea(){
 
                 echo '<form method="post" action="#">
-                <label>Nombre: <input type="text" name="nombre" /> </label>
-                <label>Categoría: <input type="text" name="categoria" /></label>
-                <label>Dificultad: <input type="range" name="dificultad" min="0" max="10" step="1" /> </label>
-                <label>Deadline:<input type="date" name="deadline" /></label>
-                <label>Asignatura(id): <input type="number" name="asignatura" /></label>
-                <label>Estimación de horas: <input type="number" name="horas" /></label>
+                <label for="nombre">Nombre:</label> <input type="text" id="nombre" name="nombre" /> 
+                <label for="categoria">Categoría: </label><input type="text" id="categoria" name="categoria" />
+                <label for="dificultad">Dificultad:</label> <input type="range" id="dificultad" name="dificultad" min="0" max="10" step="1" /> 
+                <label for="deadline">Deadline:</label><input type="date" id="deadline" name="deadline" />
+                <label for="asignatura">Asignatura(id):</label> <input type="number" id="asignatura" name="asignatura" />
+                <label for="horas">Estimación de horas:</label> <input type="number" id="horas" name="horas" />
                 <input type="submit" value="Insertar Tarea" name="submitTarea" />
                 </form>';
                 $this->verLista();
@@ -564,7 +564,7 @@
 
             public function interfazEliminarTarea(){
                 echo '<form method="post" action="#">
-                <label>Tarea (id): <input type="text" name="tarea" /> </label>
+                <label for="tarea">Tarea (id):</label> <input type="text" id="tarea" name="tarea" /> 
                 <input type="submit" value="Eliminar Tarea" name="eliminarTarea" />
                 </form>';
                 $this->verLista();
